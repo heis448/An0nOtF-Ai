@@ -2,7 +2,7 @@
 session_start();
 
 define('DB_FILE', __DIR__ . '/database.sqlite');
-define('DEFAULT_API_KEY', 'AIzaSyDHVw6E7RinLchSrQKOWIF35xq4TmhTi-E');
+define('DEFAULT_API_KEY', 'AIzaSyD6L18evsPQeEKn6eJCEkC7oyV-K80AhjU');
 define('ADMIN_USERNAME', 'An0nOtF');
 define('ADMIN_PASSWORD', '@Heistech1');
 
