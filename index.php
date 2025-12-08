@@ -31,6 +31,8 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         .particles {
@@ -238,10 +240,11 @@
 
         .main-interface {
             display: none;
-            min-height: 100vh;
+            min-height: calc(100vh - 80px);
             padding: 20px;
             position: relative;
             z-index: 10;
+            flex: 1;
         }
 
         .main-interface.active {
@@ -327,6 +330,7 @@
             position: relative;
             animation: avatar-pulse 4s ease-in-out infinite;
             box-shadow: var(--glow-cyan);
+            transition: all 0.5s ease;
         }
 
         @keyframes avatar-pulse {
@@ -356,6 +360,7 @@
             border-radius: 50%;
             animation: eye-glow 2s ease-in-out infinite;
             box-shadow: 0 0 20px var(--primary-cyan), 0 0 40px var(--primary-cyan);
+            transition: all 0.5s ease;
         }
 
         @keyframes eye-glow {
@@ -373,6 +378,7 @@
             background: var(--primary-cyan);
             border-radius: 2px;
             box-shadow: 0 0 10px var(--primary-cyan);
+            transition: all 0.5s ease;
         }
 
         .avatar-mouth.speaking {
@@ -607,7 +613,7 @@
 
         .join-section {
             position: fixed;
-            bottom: 30px;
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 100;
@@ -689,6 +695,220 @@
             color: var(--primary-cyan);
         }
 
+        /* =====================================
+           AVATAR STATES
+           ===================================== */
+
+        /* LISTENING state */
+        .avatar-core.listening {
+            border-color: #00ff88 !important;
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.6),
+                        0 0 80px rgba(0, 255, 136, 0.3) !important;
+            animation: listening-pulse 1s ease-in-out infinite !important;
+        }
+
+        .avatar-core.listening .eye {
+            background: #00ff88 !important;
+            box-shadow: 0 0 25px #00ff88,
+                        0 0 50px #00ff88 !important;
+            animation: eye-blink-fast 0.8s ease-in-out infinite !important;
+        }
+
+        .avatar-core.listening .avatar-mouth {
+            background: #00ff88 !important;
+            box-shadow: 0 0 15px #00ff88 !important;
+        }
+
+        /* SPEAKING state */
+        .avatar-core.speaking {
+            border-color: #ff3366 !important;
+            box-shadow: 0 0 40px rgba(255, 51, 102, 0.6),
+                        0 0 80px rgba(255, 51, 102, 0.3) !important;
+            animation: speaking-pulse 0.5s ease-in-out infinite !important;
+        }
+
+        .avatar-core.speaking .eye {
+            background: #ff3366 !important;
+            box-shadow: 0 0 25px #ff3366,
+                        0 0 50px #ff3366 !important;
+            animation: eye-glow 1s ease-in-out infinite !important;
+        }
+
+        .avatar-core.speaking .avatar-mouth {
+            background: #ff3366 !important;
+            box-shadow: 0 0 15px #ff3366 !important;
+            animation: speak 0.2s ease-in-out infinite !important;
+        }
+
+        /* THINKING state */
+        .avatar-core.thinking {
+            border-color: #ff9900 !important;
+            box-shadow: 0 0 40px rgba(255, 153, 0, 0.6),
+                        0 0 80px rgba(255, 153, 0, 0.3) !important;
+            animation: thinking-rotate 4s linear infinite !important;
+        }
+
+        .avatar-core.thinking .eye {
+            background: #ff9900 !important;
+            box-shadow: 0 0 25px #ff9900,
+                        0 0 50px #ff9900 !important;
+            animation: eye-pulse 1.5s ease-in-out infinite !important;
+        }
+
+        .avatar-core.thinking .avatar-mouth {
+            background: #ff9900 !important;
+            box-shadow: 0 0 15px #ff9900 !important;
+            width: 40px !important;
+            height: 4px !important;
+            animation: think-wave 2s ease-in-out infinite !important;
+        }
+
+        /* ERROR state */
+        .avatar-core.error {
+            border-color: #ff3232 !important;
+            box-shadow: 0 0 40px rgba(255, 50, 50, 0.6),
+                        0 0 80px rgba(255, 50, 50, 0.3) !important;
+            animation: error-shake 0.5s ease-in-out infinite !important;
+        }
+
+        .avatar-core.error .eye {
+            background: #ff3232 !important;
+            box-shadow: 0 0 25px #ff3232,
+                        0 0 50px #ff3232 !important;
+            animation: eye-blink-error 0.3s ease-in-out infinite !important;
+        }
+
+        .avatar-core.error .avatar-mouth {
+            background: #ff3232 !important;
+            box-shadow: 0 0 15px #ff3232 !important;
+            width: 50px !important;
+            height: 3px !important;
+        }
+
+        /* =====================================
+           NEW ANIMATIONS FOR STATES
+           ===================================== */
+
+        @keyframes listening-pulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 40px rgba(0, 255, 136, 0.6);
+            }
+            50% { 
+                transform: scale(1.03);
+                box-shadow: 0 0 60px rgba(0, 255, 136, 0.8),
+                            0 0 100px rgba(0, 255, 136, 0.4);
+            }
+        }
+
+        @keyframes speaking-pulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 40px rgba(255, 51, 102, 0.6);
+            }
+            50% { 
+                transform: scale(1.02);
+                box-shadow: 0 0 60px rgba(255, 51, 102, 0.8),
+                            0 0 100px rgba(255, 51, 102, 0.4);
+            }
+        }
+
+        @keyframes thinking-rotate {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(90deg) scale(1.02); }
+            50% { transform: rotate(180deg) scale(1); }
+            75% { transform: rotate(270deg) scale(1.02); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        @keyframes error-shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes eye-blink-fast {
+            0%, 100% { height: 20px; }
+            50% { height: 2px; }
+        }
+
+        @keyframes eye-pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        @keyframes eye-blink-error {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+
+        @keyframes think-wave {
+            0%, 100% { 
+                width: 40px;
+                border-radius: 2px;
+            }
+            50% { 
+                width: 60px;
+                border-radius: 10px;
+            }
+        }
+
+        /* =====================================
+           FOOTER
+           ===================================== */
+        .footer {
+            background: rgba(0, 245, 255, 0.05);
+            border-top: 1px solid rgba(0, 245, 255, 0.2);
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 10;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            font-family: 'Rajdhani', sans-serif;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .footer-glow {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-cyan), transparent);
+            animation: footer-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes footer-glow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        .copyright {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-cyan);
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .developer {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+        }
+
+        .developer span {
+            color: var(--primary-purple);
+            font-weight: 600;
+        }
+
         @media (max-width: 768px) {
             .system-name {
                 font-size: 1.5rem;
@@ -726,6 +946,14 @@
 
             .message-content {
                 max-width: 95%;
+            }
+
+            .join-section {
+                bottom: 80px;
+            }
+
+            .footer-content {
+                font-size: 0.8rem;
             }
         }
     </style>
@@ -769,7 +997,7 @@
             <div class="ai-avatar-section">
                 <div class="ai-avatar">
                     <div class="avatar-rings"></div>
-                    <div class="avatar-core">
+                    <div class="avatar-core" id="avatarCore">
                         <div class="avatar-eyes">
                             <div class="eye"></div>
                             <div class="eye"></div>
@@ -789,7 +1017,7 @@
                 <div class="message ai">
                     <div class="message-label">🅰️n0nOtF AI</div>
                     <div class="message-content">
-                        Greetings, Sir. I am 🅰️n0nOtF AI, your advanced personal assistant. I'm here to help you with coding, research, creative tasks, having fun together, and much more. How may I serve you today☺️?
+                        Greetings 👋. I am 🅰️n0nOtF AI, your advanced personal assistant. I'm here to help you with coding, research, creative tasks, having fun together, and much more. How may I serve you today☺️?
                     </div>
                 </div>
             </div>
@@ -819,7 +1047,7 @@
     </div>
 
     <div class="join-section" id="joinSection" style="display: none;">
-        <a href="https://t.me/+-qeY7LpUaTs4YTJk" target="_blank" class="join-btn">JOIN</a>
+        <a href="https://t.me/+-qeY7LpUaTs4YTJk" target="_blank" class="join-btn">JOIN TELEGRAM</a>
     </div>
 
     <div class="processing-overlay" id="processingOverlay">
@@ -828,6 +1056,15 @@
             <div class="processing-text">Processing...</div>
         </div>
     </div>
+
+    <!-- FOOTER -->
+    <footer class="footer" id="mainFooter" style="display: none;">
+        <div class="footer-glow"></div>
+        <div class="footer-content">
+            <div class="copyright">©️ Copyright @2025 An0nOtF Advanced Ai</div>
+            <div class="developer">Developed And Managed by <span>Tylor 💎 ~ An0nOtF Technologies Inc 💎 </span></div>
+        </div>
+    </footer>
 
     <script>
         const particles = document.getElementById('particles');
@@ -852,6 +1089,25 @@
         const initText = document.getElementById('initText');
         const welcomeText = document.getElementById('welcomeText');
         const processingOverlay = document.getElementById('processingOverlay');
+        const mainFooter = document.getElementById('mainFooter');
+
+        // =====================================
+        // AVATAR STATE MANAGEMENT
+        // =====================================
+        let avatarState = 'idle';
+
+        function setAvatarState(newState) {
+            const avatarCore = document.getElementById('avatarCore');
+            if (!avatarCore) return;
+            
+            // Remove all state classes
+            const states = ['idle', 'listening', 'speaking', 'thinking', 'error'];
+            states.forEach(state => avatarCore.classList.remove(state));
+            
+            // Add new state
+            avatarCore.classList.add(newState);
+            avatarState = newState;
+        }
 
         function updateTime() {
             const now = new Date();
@@ -869,6 +1125,7 @@
             setTimeout(() => {
                 mainInterface.classList.add('active');
                 joinSection.style.display = 'block';
+                mainFooter.style.display = 'block';
                 initializeAI();
             }, 500);
         });
@@ -892,8 +1149,21 @@
                 const preferredVoice = voices.find(v => v.name.includes('Google') || v.name.includes('Male')) || voices[0];
                 if (preferredVoice) utterance.voice = preferredVoice;
 
-                utterance.onstart = () => avatarMouth.classList.add('speaking');
-                utterance.onend = () => avatarMouth.classList.remove('speaking');
+                // Avatar state control for speaking
+                utterance.onstart = () => {
+                    setAvatarState('speaking');
+                    avatarMouth.classList.add('speaking');
+                };
+                
+                utterance.onend = () => {
+                    setAvatarState('idle');
+                    avatarMouth.classList.remove('speaking');
+                };
+                
+                utterance.onerror = () => {
+                    setAvatarState('error');
+                    setTimeout(() => setAvatarState('idle'), 2000);
+                };
                 
                 speechSynthesis.speak(utterance);
             }
@@ -951,6 +1221,7 @@
             
             showTypingIndicator();
             processingOverlay.classList.add('active');
+            setAvatarState('thinking');
 
             try {
                 const response = await fetch('backend.php', {
@@ -965,18 +1236,23 @@
                 processingOverlay.classList.remove('active');
 
                 if (data.success) {
+                    setAvatarState('idle');
                     addMessage(data.response);
                     const shortResponse = data.response.substring(0, 200);
                     speakText(shortResponse.replace(/<[^>]*>/g, '').replace(/```[\s\S]*?```/g, 'code block'));
                 } else {
+                    setAvatarState('error');
                     addMessage(`Apologies, Dear. I encountered an issue: ${data.error}`);
                     speakText("Apologies, Dear. I encountered a technical difficulty.");
+                    setTimeout(() => setAvatarState('idle'), 3000);
                 }
             } catch (error) {
                 removeTypingIndicator();
                 processingOverlay.classList.remove('active');
+                setAvatarState('error');
                 addMessage("Apologies, Dear. Connection error. Please check if the server is running.");
                 speakText("Connection error, Sir. Please verify the server status.");
+                setTimeout(() => setAvatarState('idle'), 3000);
             }
         }
 
@@ -1004,17 +1280,25 @@
             recognition.onstart = () => {
                 isRecording = true;
                 voiceBtn.classList.add('recording');
+                setAvatarState('listening');
                 speakText("Listening, Sir.");
             };
 
             recognition.onend = () => {
                 isRecording = false;
                 voiceBtn.classList.remove('recording');
+                setAvatarState('idle');
             };
 
             recognition.onerror = (event) => {
                 isRecording = false;
                 voiceBtn.classList.remove('recording');
+                setAvatarState('error');
+                
+                setTimeout(() => {
+                    setAvatarState('idle');
+                }, 2000);
+                
                 if (event.error !== 'no-speech') {
                     speakText("Voice recognition error, Sir. Please try again.");
                 }
