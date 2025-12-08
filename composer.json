@@ -3,7 +3,7 @@
     "description": "An0nOtF AI - Advanced AI Assistant System",
     "type": "project",
     "require": {
-        "php": "^8.0",
+        "php": "^8.2",
         "ext-sqlite3": "*",
         "ext-curl": "*",
         "ext-session": "*"
@@ -17,5 +17,10 @@
         "post-install-cmd": [
             "chmod 666 database.sqlite || true"
         ]
+    },
+    "config": {
+        "platform": {
+            "php": "8.2"
+        }
     }
 }
