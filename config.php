@@ -2,7 +2,6 @@
 session_start();
 
 define('DB_FILE', __DIR__ . '/database.sqlite');
-define('DEFAULT_API_KEY', 'AIzaSyD6L18evsPQeEKn6eJCEkC7oyV-K80AhjU');
 define('ADMIN_USERNAME', 'An0nOtF');
 define('ADMIN_PASSWORD', '@Heistech1');
 
@@ -24,19 +23,11 @@ function getDB() {
 }
 
 function getApiKey() {
-    $db = getDB();
-    $result = $db->querySingle("SELECT setting_value FROM settings WHERE setting_key = 'gemini_api_key'");
-    $db->close();
-    return $result ? $result : DEFAULT_API_KEY;
+    return 'GPT-5-Mini via Claila Bypass';
 }
 
 function setApiKey($key) {
-    $db = getDB();
-    $stmt = $db->prepare("INSERT OR REPLACE INTO settings (setting_key, setting_value) VALUES ('gemini_api_key', :key)");
-    $stmt->bindValue(':key', $key, SQLITE3_TEXT);
-    $result = $stmt->execute();
-    $db->close();
-    return $result ? true : false;
+    return true;
 }
 
 function logQuery($query, $response, $ip) {
