@@ -654,6 +654,47 @@
             white-space: pre-wrap;
         }
 
+        .processing-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .processing-overlay.active {
+            display: flex;
+        }
+
+        .processing-content {
+            text-align: center;
+        }
+
+        .processing-spinner {
+            width: 80px;
+            height: 80px;
+            border: 3px solid transparent;
+            border-top-color: var(--primary-cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .processing-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--primary-cyan);
+        }
+
         /* =====================================
            AVATAR STATES
            ===================================== */
@@ -1009,6 +1050,13 @@
         <a href="https://t.me/+-qeY7LpUaTs4YTJk" target="_blank" class="join-btn">JOIN TELEGRAM</a>
     </div>
 
+    <div class="processing-overlay" id="processingOverlay">
+        <div class="processing-content">
+            <div class="processing-spinner"></div>
+            <div class="processing-text">Processing...</div>
+        </div>
+    </div>
+
     <!-- FOOTER -->
     <footer class="footer" id="mainFooter" style="display: none;">
         <div class="footer-glow"></div>
@@ -1040,6 +1088,7 @@
         const avatarMouth = document.getElementById('avatarMouth');
         const initText = document.getElementById('initText');
         const welcomeText = document.getElementById('welcomeText');
+        const processingOverlay = document.getElementById('processingOverlay');
         const mainFooter = document.getElementById('mainFooter');
 
         // =====================================
@@ -1085,7 +1134,7 @@
             setTimeout(() => {
                 initText.style.display = 'none';
                 welcomeText.classList.add('visible');
-                speakText("Welcome back, Friend. How may I assist you today?");
+                speakText("Welcome back, Friend. How may I assist you today😊?");
             }, 2000);
         }
 
@@ -1163,7 +1212,7 @@
             if (typingMessage) typingMessage.remove();
         }
 
-        async function sendMessage(isVoiceMessage = false) {
+        async function sendMessage() {
             const message = chatInput.value.trim();
             if (!message) return;
 
@@ -1171,6 +1220,7 @@
             chatInput.value = '';
             
             showTypingIndicator();
+            processingOverlay.classList.add('active');
             setAvatarState('thinking');
 
             try {
@@ -1183,38 +1233,32 @@
                 const data = await response.json();
                 
                 removeTypingIndicator();
-                setAvatarState('idle');
+                processingOverlay.classList.remove('active');
 
                 if (data.success) {
+                    setAvatarState('idle');
                     addMessage(data.response);
-                    
-                    // Only speak for voice messages OR first greeting
-                    if (isVoiceMessage || message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
-                        const cleanText = data.response.replace(/<[^>]*>/g, '').replace(/```[\s\S]*?```/g, '');
-                        speakText(cleanText.substring(0, 150));
-                    }
+                    const shortResponse = data.response.substring(0, 200);
+                    speakText(shortResponse.replace(/<[^>]*>/g, '').replace(/```[\s\S]*?```/g, 'code block'));
                 } else {
                     setAvatarState('error');
                     addMessage(`Apologies, Dear. I encountered an issue: ${data.error}`);
-                    if (isVoiceMessage) {
-                        speakText("Apologies, I encountered a technical difficulty.");
-                    }
+                    speakText("Apologies, Dear. I encountered a technical difficulty.");
                     setTimeout(() => setAvatarState('idle'), 3000);
                 }
             } catch (error) {
                 removeTypingIndicator();
+                processingOverlay.classList.remove('active');
                 setAvatarState('error');
                 addMessage("Apologies, Dear. Connection error. Please check if the server is running.");
-                if (isVoiceMessage) {
-                    speakText("Connection error.");
-                }
+                speakText("Connection error, Sir. Please verify the server status.");
                 setTimeout(() => setAvatarState('idle'), 3000);
             }
         }
 
-        sendBtn.addEventListener('click', () => sendMessage(false));
+        sendBtn.addEventListener('click', sendMessage);
         chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage(false);
+            if (e.key === 'Enter') sendMessage();
         });
 
         let recognition = null;
@@ -1230,7 +1274,7 @@
             recognition.onresult = (event) => {
                 const transcript = event.results[0][0].transcript;
                 chatInput.value = transcript;
-                sendMessage(true); // true = voice message
+                sendMessage();
             };
 
             recognition.onstart = () => {
