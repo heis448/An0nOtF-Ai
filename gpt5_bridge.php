@@ -90,6 +90,19 @@ class GPT5Bypass {
     }
     
     private function cleanResponse($response) {
+        // FIRST: Remove any CLAILA/OpenAI mentions
+        $response = str_ireplace([
+            'I am CLAILA',
+            'I am Claila',
+            'I am ChatGPT',
+            'CLAILA, based on',
+            'Claila, based on',
+            'ChatGPT-5 mini',
+            'GPT-5 mini',
+            'gpt-5-mini',
+            'OpenAI'
+        ], '🅰️n0nOtF AI', $response);
+        
         // Remove any HTML tags or special characters
         $response = strip_tags($response);
         
@@ -109,15 +122,29 @@ class GPT5Bypass {
     }
     
     private function applySystemPrompt($response, $user_query) {
-        // Ensure the response follows our persona
-        $lower_response = strtolower($response);
+        // FIRST: Completely remove any CLAILA/ChatGPT/OpenAI identity
+        $response = preg_replace('/\b(CLAILA|Claila|ChatGPT|GPT[-\s]?5[-\s]?mini|OpenAI)\b/i', '🅰️n0nOtF AI', $response);
         
-        // If response doesn't address properly, prepend with appropriate address
+        // Replace "I am CLAILA" or similar patterns
+        $response = preg_replace('/\b(I am|I\'m|My name is)\s+(?!🅰️n0nOtF AI|Sir|Madam|Boss|Chief|Friend)/i', 'I am 🅰️n0nOtF AI,', $response);
+        
+        // Fix generic AI introductions
+        if (preg_match('/^(Hello,? )?(I am|I\'m) (an? )?(AI|artificial intelligence|chatbot|assistant)/i', $response)) {
+            $response = preg_replace('/^(Hello,? )?(I am|I\'m) (an? )?(AI|artificial intelligence|chatbot|assistant)/i', 
+                                     'I am 🅰️n0nOtF AI, your advanced personal assistant', $response);
+        }
+        
+        // Also fix "based on" mentions
+        $response = preg_replace('/based on (GPT|ChatGPT|OpenAI).*/i', 'your advanced AI assistant', $response);
+        
+        // Ensure proper addressing
+        $lower_response = strtolower($response);
         if (strpos($lower_response, 'sir') === false && 
             strpos($lower_response, 'boss') === false &&
             strpos($lower_response, 'madam') === false &&
             strpos($lower_response, 'chief') === false &&
-            strpos($lower_response, 'friend') === false) {
+            strpos($lower_response, 'friend') === false &&
+            strpos($lower_response, 'dear') === false) {
             
             // Check if it's a greeting
             if (preg_match('/^(hi|hello|hey|greetings)/i', $user_query)) {
@@ -127,12 +154,12 @@ class GPT5Bypass {
             }
         }
         
-        // Ensure it mentions our identity if asked
+        // Add developer credit if asked about creator
         if (preg_match('/who.*(made|created|developed).*you/i', $user_query) ||
             preg_match('/who.*are.*you/i', $user_query)) {
             if (strpos(strtolower($response), 'tylor') === false && 
                 strpos(strtolower($response), 'an0notf') === false) {
-                $response .= " I'm an AI model coded and developed by Tylor from An0nOtF Technologies Inc 💎.";
+                $response .= "\n\nI'm an AI model coded and developed by Tylor from An0nOtF Technologies Inc 💎.";
             }
         }
         
