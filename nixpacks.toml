@@ -1,0 +1,25 @@
+[phases.setup]
+nixPackages = [
+  "php82",
+  "php82Packages.composer",
+  "python310",
+  "python310Packages.pip",
+  "sqlite",
+  "nodejs-18_x"
+]
+
+[phases.install]
+cmds = [
+  "mkdir -p /var/log/nginx",
+  "mkdir -p /var/cache/nginx",
+  "composer install --ignore-platform-reqs"
+]
+
+[phases.build]
+cmds = [
+  "python3 -m pip install requests",
+  "composer install --no-dev --no-interaction --optimize-autoloader"
+]
+
+[start]
+cmd = "php -S 0.0.0.0:${PORT} -t ."
