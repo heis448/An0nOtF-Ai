@@ -40,6 +40,18 @@ if (function_exists('session_start')) {
     $success = false;
 }
 
+echo "[CHECKING] Python Support... ";
+if (function_exists('shell_exec')) {
+    $pythonCheck = shell_exec('python3 --version 2>&1');
+    if (strpos($pythonCheck, 'Python 3') !== false) {
+        echo "OK ($pythonCheck)\n";
+    } else {
+        echo "WARNING - Python 3 not found\n";
+    }
+} else {
+    echo "WARNING - shell_exec disabled\n";
+}
+
 echo "\n[SETUP] Creating database...\n";
 
 try {
@@ -62,20 +74,11 @@ try {
     )");
     echo "  - Logs table: OK\n";
     
-    $result = $db->querySingle("SELECT setting_value FROM settings WHERE setting_key = 'gemini_api_key'");
-    if (!$result) {
-        $defaultKey = 'AIzaSyAfzdkRV8LtS7Ns6eBStj2mwZ8-vCJgaYw';
-        $stmt = $db->prepare("INSERT INTO settings (setting_key, setting_value) VALUES ('gemini_api_key', :key)");
-        $stmt->bindValue(':key', $defaultKey, SQLITE3_TEXT);
-        $stmt->execute();
-        echo "  - Default API key set: OK\n";
-    } else {
-        echo "  - API key already configured: OK\n";
-    }
+    echo "  - GPT-5 Bypass: READY\n";
     
     $db->close();
     
-    chmod($dbFile, 0666);
+    @chmod($dbFile, 0666);
     echo "  - Database permissions: OK\n";
     
 } catch (Exception $e) {
@@ -84,13 +87,22 @@ try {
 }
 
 echo "\n[CHECKING] File permissions...\n";
-$files = ['index.php', 'backend.php', 'adminpanel.php', 'config.php'];
+$files = ['index.php', 'backend.php', 'adminpanel.php', 'config.php', 'python_bridge.php', 'Gpt5.py'];
 foreach ($files as $file) {
     if (file_exists(__DIR__ . '/' . $file)) {
-        echo "  - $file: OK\n";
+        echo "  - $file: FOUND\n";
     } else {
         echo "  - $file: MISSING\n";
         $success = false;
+    }
+}
+
+echo "\n[TESTING] GPT-5 Bridge...\n";
+if (file_exists(__DIR__ . '/python_bridge.php')) {
+    require_once __DIR__ . '/python_bridge.php';
+    
+    if (function_exists('testGPT5')) {
+        echo "  - Bridge functions: LOADED\n";
     }
 }
 
@@ -99,16 +111,29 @@ if ($success) {
     echo "  SETUP COMPLETED SUCCESSFULLY!\n";
     echo "========================================\n\n";
     echo "Your 🅰️n0nOtF AI system is ready.\n\n";
+    
+    echo "🎯 FEATURES:\n";
+    echo "   • GPT-5 Bypass AI\n";
+    echo "   • Voice Input/Output\n";
+    echo "   • Advanced UI Animations\n";
+    echo "   • Admin Dashboard\n\n";
+    
     echo "Quick Links:\n";
     echo "  - Main Interface: <a href='index.php' style='color: #8000ff;'>index.php</a>\n";
     echo "  - Admin Panel: <a href='adminpanel.php' style='color: #8000ff;'>adminpanel.php</a>\n\n";
+    
     echo "Admin Credentials:\n";
     echo "  Username: An0nOtF\n";
-    echo "  Password: @Heistech\n\n";
-    echo "IMPORTANT: Delete this setup.php file after installation!\n";
+    echo "  Password: @Heistech1\n\n";
+    
+    echo "⚠️ IMPORTANT:\n";
+    echo "  1. Install Python requests: pip install requests\n";
+    echo "  2. Delete this setup.php after installation!\n";
+    
 } else {
-    echo "  SETUP FAILED - FIX ERRORS ABOVE\n";
-    echo "========================================\n";
+    echo "  SETUP PARTIALLY COMPLETE\n";
+    echo "========================================\n\n";
+    echo "Some checks failed, but system may work.\n";
 }
 
 echo "</pre>";

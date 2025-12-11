@@ -24,19 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
     
-    if (isset($_POST['update_api_key']) && isAdminLoggedIn()) {
-        $newKey = trim($_POST['api_key'] ?? '');
-        if (!empty($newKey)) {
-            if (setApiKey($newKey)) {
-                $success = 'API Key updated successfully!';
-            } else {
-                $error = 'Failed to update API key.';
-            }
-        } else {
-            $error = 'Please enter a valid API key.';
-        }
-    }
-    
     if (isset($_POST['clear_logs']) && isAdminLoggedIn()) {
         clearLogs();
         $success = 'All logs cleared successfully!';
@@ -44,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $logs = isAdminLoggedIn() ? getLogs(100) : [];
-$currentApiKey = isAdminLoggedIn() ? getApiKey() : '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -231,16 +217,6 @@ $currentApiKey = isAdminLoggedIn() ? getApiKey() : '';
             background: rgba(0, 255, 136, 0.1);
             border: 1px solid rgba(0, 255, 136, 0.3);
             color: var(--success);
-        }
-
-        .api-key-display {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            word-break: break-all;
-            margin-bottom: 20px;
-            border: 1px solid rgba(0, 245, 255, 0.2);
         }
 
         .logs-table {
@@ -438,20 +414,12 @@ $currentApiKey = isAdminLoggedIn() ? getApiKey() : '';
         </div>
 
         <div class="card">
-            <h2>Gemini API Configuration</h2>
-            
+            <h2>System Information</h2>
             <div class="api-key-display">
-                <strong>Current API Key:</strong><br>
-                <?php echo htmlspecialchars(substr($currentApiKey, 0, 20) . '...' . substr($currentApiKey, -10)); ?>
+                <strong>AI Engine:</strong> GPT-5 Bypass (Claila)<br>
+                <strong>Status:</strong> Active<br>
+                <strong>Voice Support:</strong> Enabled
             </div>
-
-            <form method="POST">
-                <div class="form-group">
-                    <label>New API Key</label>
-                    <input type="text" name="api_key" class="form-control" placeholder="Enter new Gemini API key">
-                </div>
-                <button type="submit" name="update_api_key" class="btn btn-primary">Update API Key</button>
-            </form>
         </div>
 
         <div class="card">
