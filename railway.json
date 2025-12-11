@@ -3,7 +3,7 @@
     "stack": "container",
     "build": {
         "builder": "nixpacks",
-        "buildCommand": "pip install -r requirements.txt && composer install --no-dev --no-interaction --optimize-autoloader"
+        "buildCommand": "python3 -m pip install --user -r requirements.txt && composer install --no-dev --no-interaction --optimize-autoloader"
     },
     "deploy": {
         "startCommand": "php -S 0.0.0.0:${PORT} -t .",
