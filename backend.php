@@ -38,29 +38,6 @@ function getAIResponse($prompt) {
 }
 
 /**
- * Log query to database
- */
-function logQuery($query, $response, $ip) {
-    $db = getDB();
-    
-    // Truncate very long responses for storage
-    $truncatedResponse = strlen($response) > 5000 ? substr($response, 0, 5000) . '...' : $response;
-    
-    $stmt = $db->prepare("INSERT INTO logs (query, response, ip_address) VALUES (:query, :response, :ip)");
-    $stmt->bindValue(':query', $query, SQLITE3_TEXT);
-    $stmt->bindValue(':response', $truncatedResponse, SQLITE3_TEXT);
-    $stmt->bindValue(':ip', $ip, SQLITE3_TEXT);
-    
-    if ($stmt->execute()) {
-        $db->close();
-        return true;
-    }
-    
-    $db->close();
-    return false;
-}
-
-/**
  * Main request handler
  */
 try {
@@ -86,7 +63,7 @@ try {
         // Get AI response
         $result = getAIResponse($query);
         
-        // Log successful queries
+        // Log successful queries (using logQuery from config.php)
         if ($result['success']) {
             logQuery($query, $result['response'], $ip);
             
