@@ -1009,7 +1009,7 @@
                     <span class="init-dots">.... </span>Initializing...
                 </div>
                 <div class="welcome-text" id="welcomeText">
-                    "Welcome back, Friend. How may I assist you today😊?"
+                    "Welcome back, Friend. How may I assist you today?"
                 </div>
             </div>
 
@@ -1024,7 +1024,7 @@
 
             <div class="input-section">
                 <div class="input-wrapper">
-                    <input type="text" class="chat-input" id="chatInput" placeholder="Enter your command, Sir..." autocomplete="off">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Message An0nOtF Ai..." autocomplete="off">
                 </div>
                 <div class="btn-group">
                     <button class="action-btn" id="voiceBtn" title="Voice Command">
