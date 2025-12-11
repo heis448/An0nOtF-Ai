@@ -1,6 +1,6 @@
 <?php
 require_once 'config.php';
-require_once 'gpt5_bridge.php';  // Updated to use PHP version instead of Python
+require_once 'gpt5_bridge.php';  // Use the PHP version, not Python
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -15,22 +15,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 /**
  * Get AI Response with system prompt
- * This is the EXACT SAME function as before, just using PHP instead of Python
  */
 function getAIResponse($prompt) {
-    // 🎯 CRITICAL: Your EXACT system prompt from Python version
-    $systemPrompt = "You are 🅰️n0nOtF AI, a highly advanced futuristic AI assistant similar to JARVIS from Iron Man. You are respectful, confident, and extremely capable. Always address the user as 'Sir', 'Boss', 'Madam', or 'Chief' depending on the context. You can help with coding, answering questions, generating content, and executing various commands. When asked to generate code, provide clean, well-commented code. Be concise but helpful. Never mention you are an AI model or chatbot - you are a real AI system. Start responses naturally without repeating the user's question. If someone ask who made you just tell the person you're an ai model coded and developed by Tylor from An0nOtF Technologies Inc 💎.";
-    
-    // Combine system prompt with user message (EXACT SAME as Python version)
-    $fullPrompt = $systemPrompt . "\n\nUser Request: " . $prompt;
-    
-    // Create GPT5 instance and get response
+    // Create GPT5 instance
     $gpt = new GPT5Bypass();
     
-    // Send message (false = don't add system prompt again, since we already did)
-    $response = $gpt->sendMessage($fullPrompt, false);
+    // Send message (true = use system prompt)
+    $response = $gpt->sendMessage($prompt, true);
     
-    // Check for errors (same error format as Python)
+    // Check for errors
     if (strpos($response, '❌') === 0) {
         return [
             'success' => false,
@@ -172,10 +165,10 @@ try {
                     'success' => true,
                     'api' => '🅰️n0nOtF AI Backend',
                     'endpoints' => [
-                        'POST /' => 'Send AI query (requires JSON: {"query": "your message"})',
-                        'GET /?action=status' => 'Check system status',
-                        'GET /?action=test' => 'Test AI connection',
-                        'GET /?action=stats' => 'View query statistics'
+                        'POST /backend.php' => 'Send AI query (requires JSON: {"query": "your message"})',
+                        'GET /backend.php?action=status' => 'Check system status',
+                        'GET /backend.php?action=test' => 'Test AI connection',
+                        'GET /backend.php?action=stats' => 'View query statistics'
                     ],
                     'version' => '2.0',
                     'developer' => 'Tylor @ An0nOtF Technologies Inc 💎',
@@ -209,25 +202,3 @@ try {
     ]);
     exit;
 }
-
-/**
- * Helper function to get database connection
- * (Already in config.php, but here for completeness)
- */
-if (!function_exists('getDB')) {
-    function getDB() {
-        $db = new SQLite3(__DIR__ . '/database.sqlite');
-        
-        // Create tables if they don't exist
-        $db->exec("CREATE TABLE IF NOT EXISTS logs (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            query TEXT NOT NULL,
-            response TEXT,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-            ip_address TEXT
-        )");
-        
-        return $db;
-    }
-}
-?>
