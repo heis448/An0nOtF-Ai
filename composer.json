@@ -1,18 +1,13 @@
 {
     "name": "an0notf/ai",
-    "description": "An0nOtF AI - Advanced AI Assistant System",
+    "description": "An0nOtF AI System",
     "type": "project",
     "require": {
-        "php": "^8.0",
+        "php": "^8.2",
         "ext-curl": "*",
         "ext-sqlite3": "*",
-        "ext-session": "*",
-        "ext-json": "*"
-    },
-    "autoload": {
-        "psr-4": {
-            "App\\": "app/"
-        }
+        "ext-json": "*",
+        "ext-session": "*"
     },
     "scripts": {
         "post-install-cmd": [
