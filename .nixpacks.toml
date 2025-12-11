@@ -1,0 +1,20 @@
+[phases.setup]
+nixPkgs = [
+    "php82",                    # Changed from php80
+    "php82Packages.composer",
+    "sqlite",
+    "curl"                      # Added curl for API calls
+]
+
+[phases.install]
+cmds = [
+    "composer install --ignore-platform-reqs"
+]
+
+[phases.build]
+cmds = [
+    "composer install --no-dev --no-interaction --optimize-autoloader"
+]
+
+[start]
+cmd = "php -S 0.0.0.0:$PORT -t ."
